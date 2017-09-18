@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"github.com/davecgh/go-spew/spew"
 	"time"
+	//todo: remove
 )
 
 type Board struct {
@@ -20,10 +21,6 @@ func NewBoard() *Board {
 	return &Board{
 		zb,
 	}
-}
-
-type Instance struct {
-	imagePath string `msgpack:"imagePath"`
 }
 
 func Run() {
@@ -41,21 +38,26 @@ func Run() {
 			panic(err)
 		}
 
+
+		type Foo struct {
+			Bar string `msgpack:"imagePath"`
+		}
+
 		t := time.Now()
 		imgPath := fmt.Sprintf("/tmp/watermarking/%s-%s", t.Format("20060102150405"), img.Filename)
 		ioutil.WriteFile(imgPath, img.Data, 0644)
 		fmt.Println(imgPath)
-		i := Instance{imagePath: imgPath}
-		payload, err := msgpack.Marshal(i)
+		i := Foo{Bar: imgPath}
+		spew.Dump(i)
+		payload, err := msgpack.Marshal(&i)
+		spew.Dump(payload)
+
 		if err != nil {
 			panic(err)
 		}
 
 		spew.Dump(payload)
 
-		var item Instance
-		err = msgpack.Unmarshal(payload, &item)
-		fmt.Println(item)
 		instance := zbc.NewWorkflowInstance("watermark", -1, payload)
 		fmt.Println(instance)
 		resp, err := board.client.CreateWorkflowInstance("default-topic", instance);
