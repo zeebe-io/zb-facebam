@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+
+  zeebe:
+    image: camunda/zeebe
+    ports:
+      - 51015:51015
+
+  board:
+    image: psam/facebam
+    command: service board
+    env:
+      - AWS_ACCESS_KEY_ID: AKIAJMVH523HK74Q4T6A
+      - AWS_SECRET_ACCESS_KEY: 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
+    ports:
+      - 8080:8080
+
+  analysis:
+    image: psam/facebam
+    command: service analysis
+    ports:
+      - 8080:8080
+
+  cropper:
+    image: psam/facebam
+    command: service cropper
+    ports:
+          - 8080:8080
+
+  processing:
+    image: psam/facebam
+    command: service processing
+    ports:
+      - 8080:8080
+
+  storage:
+    image: psam/facebam
+    command: service storage
+    ports:
+      - 8080:8080
