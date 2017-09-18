@@ -3,57 +3,25 @@ package board
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/olahol/go-imageupload"
+	"github.com/vmihailenco/msgpack"
 	"fmt"
-	"sync"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/zeebe-io/zbc-go/zbc"
 	"io/ioutil"
+	"github.com/davecgh/go-spew/spew"
+	"time"
+	//todo: remove
 )
 
 type Board struct {
-	//*sync.WaitGroup
-	//BucketName string
-	//s3svc *s3.S3
 	client *zbc.Client
 }
 
-func (b *Board) createWorkflowInstance() {
-	instance := zbc.NewWorkflowInstance()
-	msg, err := b.client.CreateWorkflowInstance("default-topic", instance)
-}
-
-//
-//func (b *Board) uploadFileToS3(filePath, name string) {
-//	defer b.Done()
-//	fmt.Printf("[+] Spawning S3UPLOAD routine: %s\n", filePath)
-//
-//	file, err := os.Open(filePath)
-//	defer file.Close()
-//
-//	stat, _ := file.Stat()
-//	if stat.Size() == 0 { return } // file is empty. skip upload.
-//
-//	params := &s3.PutObjectInput{ Bucket: aws.String(b.BucketName), Key: aws.String(name), Body: file, }
-//	_, err = b.s3svc.PutObject(params)
-//
-//	if err != nil {
-//		panic(err)
-//	}
-//
-//	return
-//}
-
 func NewBoard() *Board {
-	zb, _ := zbc.NewClient("0.0.0.0:51015")
+	zb, _ := zbc.NewClient("127.0.0.1:51015")
 	return &Board{
-		//&sync.WaitGroup{},
-		//"facebam",
-		//s3.New(session.Must(session.NewSession())),
 		zb,
 	}
 }
-
 
 func Run() {
 	r := gin.Default()
@@ -70,20 +38,31 @@ func Run() {
 			panic(err)
 		}
 
-		thumb, err := imageupload.ThumbnailPNG(img, 300, 300)
+
+		type Foo struct {
+			Bar string `msgpack:"imagePath"`
+		}
+
+		t := time.Now()
+		imgPath := fmt.Sprintf("/tmp/watermarking/%s-%s", t.Format("20060102150405"), img.Filename)
+		ioutil.WriteFile(imgPath, img.Data, 0644)
+		fmt.Println(imgPath)
+		i := Foo{Bar: imgPath}
+		spew.Dump(i)
+		payload, err := msgpack.Marshal(&i)
+		spew.Dump(payload)
 
 		if err != nil {
 			panic(err)
 		}
 
-		imgPath := fmt.Sprintf("/tmp/%s", img.Filename)
-		ioutil.WriteFile(imgPath, img.Data, 0644)
-		board.Add(1)
-		//go board.uploadFileToS3(imgPath, img.Filename)
-		// TODO: imgPath to msgpack -> payload
-		instance := zbc.NewWorkflowInstance()
-
-		thumb.Write(c.Writer)
+		instance := zbc.NewWorkflowInstance("watermark", -1, payload)
+		fmt.Println(instance)
+		resp, err := board.client.CreateWorkflowInstance("default-topic", instance);
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(resp)
 	})
 
 	r.Run(":5000")
