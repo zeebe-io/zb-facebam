@@ -12,20 +12,17 @@ import (
 )
 
 type Board struct {
-	*sync.WaitGroup
-	BucketName string
-	s3svc *s3.S3
+	//*sync.WaitGroup
+	//BucketName string
+	//s3svc *s3.S3
 	client *zbc.Client
 }
 
-func (b *Board) createWorkflow() {
-
+func (b *Board) createWorkflowInstance() {
+	instance := zbc.NewWorkflowInstance()
+	msg, err := b.client.CreateWorkflowInstance("default-topic", instance)
 }
 
-//func (b *Board) createWorkflowInstance() {
-//	instance := zbc.NewWorkflowInstance()
-//	msg, err := b.client.CreateWorkflowInstance("default-topic", instance)
-//}
 //
 //func (b *Board) uploadFileToS3(filePath, name string) {
 //	defer b.Done()
@@ -50,9 +47,9 @@ func (b *Board) createWorkflow() {
 func NewBoard() *Board {
 	zb, _ := zbc.NewClient("0.0.0.0:51015")
 	return &Board{
-		&sync.WaitGroup{},
-		"facebam",
-		s3.New(session.Must(session.NewSession())),
+		//&sync.WaitGroup{},
+		//"facebam",
+		//s3.New(session.Must(session.NewSession())),
 		zb,
 	}
 }
@@ -83,7 +80,9 @@ func Run() {
 		ioutil.WriteFile(imgPath, img.Data, 0644)
 		board.Add(1)
 		//go board.uploadFileToS3(imgPath, img.Filename)
+		// TODO: imgPath to msgpack -> payload
 		instance := zbc.NewWorkflowInstance()
+
 		thumb.Write(c.Writer)
 	})
 
