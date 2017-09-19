@@ -4,6 +4,7 @@ import (
 	"os"
 	"github.com/urfave/cli"
 	"github.com/zeebe-io/zb-facebam/board"
+	"github.com/zeebe-io/zb-facebam/thumbnail"
 )
 
 const version = "0.1.0"
@@ -29,14 +30,6 @@ func main() {
 			Usage:   "start a service",
 			Subcommands: []cli.Command{
 				{
-					Name:    "analysis",
-					Aliases: []string{"a"},
-					Usage:   "",
-					Action: func(c *cli.Context) error {
-						return nil
-					},
-				},
-				{
 					Name:    "board",
 					Aliases: []string{"b"},
 					Usage:   "",
@@ -46,26 +39,11 @@ func main() {
 					},
 				},
 				{
-					Name:    "cropper",
-					Aliases: []string{"c"},
+					Name:    "thumbnail",
+					Aliases: []string{"t"},
 					Usage:   "",
 					Action: func(c *cli.Context) error {
-						return nil
-					},
-				},
-				{
-					Name:    "processing",
-					Aliases: []string{"c"},
-					Usage:   "",
-					Action: func(c *cli.Context) error {
-						return nil
-					},
-				},
-				{
-					Name:    "storage",
-					Aliases: []string{"c"},
-					Usage:   "",
-					Action: func(c *cli.Context) error {
+                        thumbnail.Run()
 						return nil
 					},
 				},
