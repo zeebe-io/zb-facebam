@@ -34,7 +34,7 @@ func Run() {
 	r := gin.Default()
 	board := NewBoard()
 
-	r.GET("/upload", func(c *gin.Context) {	
+	r.GET("/", func(c *gin.Context) {
 		c.File("board/templates/upload.html")
 	})
 	
@@ -61,6 +61,8 @@ func Run() {
 		}
 
 		fmt.Println("Upload file to", imgPath)
+
+		c.Redirect(302, "/images")
 	})
 
 
