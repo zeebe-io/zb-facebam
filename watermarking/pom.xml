@@ -72,7 +72,7 @@
           <appendAssemblyId>false</appendAssemblyId>
           <archive>
             <manifest>
-              <mainClass>io.zeebe.demo.zalando.image.Watermarker</mainClass>
+              <mainClass>io.zeebe.demo.facebam.watermark.Watermarker</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
