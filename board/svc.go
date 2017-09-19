@@ -8,6 +8,7 @@ import (
 	"github.com/zeebe-io/zbc-go/zbc"
 	"io/ioutil"
 	"time"
+	"os"
 )
 
 type Board struct {
@@ -28,6 +29,9 @@ type Payload struct {
 func Run() {
 	r := gin.Default()
 	board := NewBoard()
+
+	_ = os.Mkdir("/tmp/watermarking", os.ModePerm)
+
 
 	r.GET("/", func(c *gin.Context) {
 		c.File("board/templates/upload.html")
