@@ -70,8 +70,7 @@ func Run() {
 	r.GET("/upload", func(c *gin.Context) {
 		c.File("board/templates/upload.html")
 	})
-
-		//gin.WrapH(http.FileServer(http.Dir("/tmp"))))
+	
 	r.POST("/upload", func(c *gin.Context) {
 		img, err := imageupload.Process(c.Request, "file")
 
