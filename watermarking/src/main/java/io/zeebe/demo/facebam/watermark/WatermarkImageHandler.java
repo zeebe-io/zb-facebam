@@ -55,6 +55,7 @@ public class WatermarkImageHandler implements TaskHandler
         }
 
         inputPayload.put(OUTPUT_PATH_VAR, waterMarkPath);
+        System.out.println("Saved watermarked image to " + waterMarkPath);
 
         String outputPayload = serializePayload(inputPayload);
 
