@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"time"
 	"net/http"
-	//todo: remove
 	"os"
 )
 
