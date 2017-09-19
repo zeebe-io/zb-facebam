@@ -10,6 +10,8 @@ import (
 	"time"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 type Board struct {
@@ -27,12 +29,10 @@ type Payload struct {
 }
 
 func Run() {
-  _ = os.Mkdir("/tmp/watermarking", os.ModePerm)
+ 	 _ = os.Mkdir("/tmp/watermarking", os.ModePerm)
 
 	r := gin.Default()
 	board := NewBoard()
-
-	r.GET("/", gin.WrapH(http.FileServer(http.Dir("/tmp/watermarking"))))
 
 	r.GET("/upload", func(c *gin.Context) {	
 		c.File("board/templates/upload.html")
@@ -61,6 +61,20 @@ func Run() {
 		}
 
 		fmt.Println("Upload file to", imgPath)
+	})
+
+
+	r.GET("/images/", gin.WrapH(http.StripPrefix("/images/", http.FileServer(http.Dir("/tmp/watermarking")))))
+
+	r.GET("/images/:filename", func(ctx *gin.Context) {
+		fileName := ctx.Param("filename")
+		targetPath := filepath.Join("/tmp/watermarking", fileName)
+		if !strings.HasPrefix(filepath.Clean(targetPath), "/tmp/watermarking") {
+			ctx.String(403, ":(")
+			return
+		}
+		
+		ctx.File(targetPath)
 	})
 
 	r.Run(":5000")
