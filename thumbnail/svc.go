@@ -38,7 +38,8 @@ func processTask(msg *zbc.TaskEvent) {
 	thumb, err := imageupload.ThumbnailPNG(image, 300, 300)
 	parts := strings.Split(image.Filename, "/")
 	filename := parts[len(parts) - 1]
-	thumbPath := fmt.Sprintf("/tmp/watermarking/thumb-%s", filename)
+	parts = strings.Split(filename, ".")
+	thumbPath := fmt.Sprintf("/tmp/watermarking/%s-thumb.%s", parts[0], parts[len(parts) - 1])
 
 	ioutil.WriteFile(thumbPath, thumb.Data, 0644)
 
