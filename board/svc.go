@@ -8,13 +8,13 @@ import (
 	"github.com/zeebe-io/zbc-go/zbc"
 	"io/ioutil"
 	"time"
+	"net/http"
 	"os"
 )
 
 type Board struct {
 	client *zbc.Client
 }
-
 
 func NewBoard() *Board {
 	zb, _ := zbc.NewClient("127.0.0.1:51015")
@@ -27,24 +27,23 @@ type Payload struct {
 }
 
 func Run() {
+  _ = os.Mkdir("/tmp/watermarking", os.ModePerm)
+
 	r := gin.Default()
 	board := NewBoard()
 
-	_ = os.Mkdir("/tmp/watermarking", os.ModePerm)
+	r.GET("/", gin.WrapH(http.FileServer(http.Dir("/tmp/watermarking"))))
 
-
-	r.GET("/", func(c *gin.Context) {
+	r.GET("/upload", func(c *gin.Context) {	
 		c.File("board/templates/upload.html")
 	})
-
+	
 	r.POST("/upload", func(c *gin.Context) {
 		img, err := imageupload.Process(c.Request, "file")
 
 		if err != nil {
 			panic(err)
 		}
-
-
 
 		t := time.Now()
 		imgPath := fmt.Sprintf("/tmp/watermarking/%s-%s", t.Format("20060102150405"), img.Filename)
