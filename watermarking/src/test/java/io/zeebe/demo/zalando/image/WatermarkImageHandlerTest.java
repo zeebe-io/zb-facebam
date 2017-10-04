@@ -39,8 +39,6 @@ public class WatermarkImageHandlerTest
     {
         broker = new Broker((InputStream) null);
         client = ZeebeClient.create(new Properties());
-        client.connect();
-
 
         client.topics().create(TOPIC, 1).execute();
 

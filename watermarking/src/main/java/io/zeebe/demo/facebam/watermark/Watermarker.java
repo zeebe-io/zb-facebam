@@ -33,7 +33,6 @@ public class Watermarker
         }
 
         ZeebeClient client = ZeebeClient.create(properties);
-        client.connect();
 
         TaskSubscription subscription = client.tasks().newTaskSubscription(topic)
             .handler(new WatermarkImageHandler())

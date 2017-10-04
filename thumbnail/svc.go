@@ -15,7 +15,7 @@ type Payload struct {
 	Watermark string `msgpack:"watermarkPath"`
 }
 
-func processTask(msg *zbc.TaskEvent) {
+func processTask(msg *zbc.SubscriptionEvent) {
 	var payload Payload
 
 	err := msgpack.Unmarshal(msg.Payload, &payload)
