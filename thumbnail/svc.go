@@ -18,7 +18,7 @@ type Payload struct {
 func processTask(msg *zbc.SubscriptionEvent) {
 	var payload Payload
 
-	err := msgpack.Unmarshal(msg.Payload, &payload)
+	err := msgpack.Unmarshal(msg.Task.Payload, &payload)
 	if err != nil {
 		panic(err)
 	}
