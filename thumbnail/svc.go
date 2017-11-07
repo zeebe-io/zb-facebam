@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+	"github.com/davecgh/go-spew/spew"
 )
 
 type Payload struct {
@@ -47,7 +48,7 @@ func processTask(msg *zbc.SubscriptionEvent) {
 }
 
 func Run() {
-	client, _ := zbc.NewClient("127.0.0.1:51015")
+	client, _ := zbc.NewClient("0.0.0.0:51015")
 
 	subscriptionCh, subInfo, err := client.TaskConsumer("default-topic", "thumbnailer", "thumbnail")
 
@@ -80,7 +81,7 @@ func Run() {
 			}
 
 			if credits < 1 {
-				response, err := client.IncreaseTaskSubscriptionCredits(subInfo);
+				response, err := client.IncreaseTaskSubscriptionCredits(subInfo)
 
 				if err != nil {
 					log.Println("Increasing task credits went wrong.")
