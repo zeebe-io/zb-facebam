@@ -1,0 +1,113 @@
+{
+	"ImportPath": "github.com/zeebe-io/zb-facebam",
+	"GoVersion": "go1.9",
+	"GodepVersion": "v79",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/davecgh/go-spew/spew",
+			"Comment": "v1.1.0-9-gecdeabc",
+			"Rev": "ecdeabc65495df2dec95d7c4a4c3e021903035e5"
+		},
+		{
+			"ImportPath": "github.com/gin-contrib/sse",
+			"Rev": "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin",
+			"Comment": "v1.2-122-g76ad15a",
+			"Rev": "76ad15ab32d000115cb7622a8317d7425dfc039c"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin/binding",
+			"Comment": "v1.2-122-g76ad15a",
+			"Rev": "76ad15ab32d000115cb7622a8317d7425dfc039c"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin/json",
+			"Comment": "v1.2-122-g76ad15a",
+			"Rev": "76ad15ab32d000115cb7622a8317d7425dfc039c"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin/render",
+			"Comment": "v1.2-122-g76ad15a",
+			"Rev": "76ad15ab32d000115cb7622a8317d7425dfc039c"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Rev": "1643683e1b54a9e88ad26d98f81400c8c9d9f4f9"
+		},
+		{
+			"ImportPath": "github.com/json-iterator/go",
+			"Comment": "1.0.3-8-gb1b0038",
+			"Rev": "b1b003864e6d16e27a543216770f74dda086fbb9"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Comment": "v0.0.3-7-g6ca4dbf",
+			"Rev": "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
+		},
+		{
+			"ImportPath": "github.com/nfnt/resize",
+			"Rev": "891127d8d1b52734debe1b3c3d7e747502b6c366"
+		},
+		{
+			"ImportPath": "github.com/olahol/go-imageupload",
+			"Rev": "09d2b92fa05eff7d0c06d77a7803c74a824b0eb1"
+		},
+		{
+			"ImportPath": "github.com/ugorji/go/codec",
+			"Rev": "f96c3ef8537241b4d508df6db3e0337d3130e50b"
+		},
+		{
+			"ImportPath": "github.com/urfave/cli",
+			"Comment": "v1.20.0-30-g7f4b273",
+			"Rev": "7f4b273a05858e05b96b6adf0a7907b7b695c352"
+		},
+		{
+			"ImportPath": "github.com/vmihailenco/msgpack",
+			"Comment": "v3.2.0",
+			"Rev": "df5e5d20905d833657b92cafe6f6341ca1378083"
+		},
+		{
+			"ImportPath": "github.com/vmihailenco/msgpack/codes",
+			"Comment": "v3.2.0",
+			"Rev": "df5e5d20905d833657b92cafe6f6341ca1378083"
+		},
+		{
+			"ImportPath": "github.com/zeebe-io/zbc-go/zbc",
+			"Comment": "0.4.0",
+			"Rev": "cb70fe95ca19120b7f240671a83127c17064a9cd"
+		},
+		{
+			"ImportPath": "github.com/zeebe-io/zbc-go/zbc/zbmsgpack",
+			"Comment": "0.4.0",
+			"Rev": "cb70fe95ca19120b7f240671a83127c17064a9cd"
+		},
+		{
+			"ImportPath": "github.com/zeebe-io/zbc-go/zbc/zbprotocol",
+			"Comment": "0.4.0",
+			"Rev": "cb70fe95ca19120b7f240671a83127c17064a9cd"
+		},
+		{
+			"ImportPath": "github.com/zeebe-io/zbc-go/zbc/zbsbe",
+			"Comment": "0.4.0",
+			"Rev": "cb70fe95ca19120b7f240671a83127c17064a9cd"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "75813c647272dd855bda156405bf844a5414f5bf"
+		},
+		{
+			"ImportPath": "gopkg.in/go-playground/validator.v8",
+			"Comment": "v8.18.2",
+			"Rev": "5f1438d3fca68893a817e4a66806cea46a9e4ebf"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
+		}
+	]
+}

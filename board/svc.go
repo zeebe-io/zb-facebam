@@ -3,7 +3,6 @@ package board
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/olahol/go-imageupload"
-	"github.com/vmihailenco/msgpack"
 	"fmt"
 	"github.com/zeebe-io/zbc-go/zbc"
 	"io/ioutil"
@@ -19,7 +18,7 @@ type Board struct {
 }
 
 func NewBoard() *Board {
-	zb, _ := zbc.NewClient("127.0.0.1:51015")
+	zb, _ := zbc.NewClient("0.0.0.0:51015")
 	return &Board{
 		zb,
 	}
@@ -48,14 +47,16 @@ func Run() {
 		t := time.Now()
 		imgPath := fmt.Sprintf("/tmp/watermarking/%s-%s", t.Format("20060102150405"), img.Filename)
 		ioutil.WriteFile(imgPath, img.Data, 0644)
-		payload, err := msgpack.Marshal(&Payload{Image: imgPath})
+		
+		payload := make(map[string]interface{})
+		payload["imagePath"] = imgPath
 
 		if err != nil {
 			panic(err)
 		}
 
 		instance := zbc.NewWorkflowInstance("watermark", -1, payload)
-		_, err = board.client.CreateWorkflowInstance("default-topic", instance);
+		_, err = board.client.CreateWorkflowInstance("default-topic", instance)
 		if err != nil {
 			panic(err)
 		}
