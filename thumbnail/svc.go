@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
-	"github.com/davecgh/go-spew/spew"
 )
 
 type Payload struct {

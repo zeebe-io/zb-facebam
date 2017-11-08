@@ -1,17 +1,22 @@
 # zb-facebam
 
-This project implements example application which consist of 3 services: board, thumbnail and watermarking.
+This project implements example application which consist of 3 services: board,
+thumbnail and watermarking.
 
 The process which is implemented is the following:
 
 ![process](process.png)
 
 
+**Note:** The services work on a hard coded path `/tmp/watermarking` which
+will probably only work in \*UNIX like environments.
+
 ### Requirements
 
-* Java 1.8+
+* Java 1.8
 * Golang 1.5+
-* Running Zeebe broker
+* [Running Zeebe broker](https://docs.zeebe.io/introduction/install.html)
+* [zbctl](https://github.com/zeebe-io/zbc-go/releases)
 
 
 ### Setup
@@ -30,35 +35,43 @@ zbctl create workflow process.bpmn
 
 
 
-To start microservices use ```make``` command. Open 3 terminals and in each of them start 1 service with the following commands:
+To start microservices use `make` command. Open 3 terminals and in each of
+them start 1 service with the following commands:
 
 ```
 make board
 ```
 
-After starting this service, point your browser to ```localhost:5000``` and click on the upload photo button. Select some PNG photo and confirm the upload.
-
-
-
-```
-make thumbnail
-```
-
-This service will create thumbnail of the uploaded image.
-
+After starting this service, point your browser to http://localhost:5000 and
+click on the upload photo button. Select some PNG photo and confirm the upload.
 
 ```
 make watermark
 ```
 
-This service will watermark uploaded image.
+This service will watermark uploaded image. You should see some output similar
+to the following.
 
 
-
-*Note*: Board and thumbnail services are written in Go and watermark is build in Java, so you have to build them accordingly. To build Java service you can use the following command:
-
-
-```bash
-cd watermarking
-mvn package -DskipTests
 ```
+Saved watermarked image to /tmp/watermarking/...
+```
+
+Then start the thumbnail service.
+
+```
+make thumbnail
+```
+
+This service will create thumbnail of the uploaded image. You should see some
+output similar to the following.
+
+```
+Waiting for events ....
+Saved thumbnail to /tmp/watermarking/...
+Task completed successfully.
+```
+
+After you uploaded an image and the task services processes it you can visit
+http://localhost:5000/images/ and refresh the page using CTRL+F5 to list the
+process images.

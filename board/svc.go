@@ -23,9 +23,6 @@ func NewBoard() *Board {
 		zb,
 	}
 }
-type Payload struct {
-	Image string `msgpack:"imagePath"`
-}
 
 func Run() {
  	 _ = os.Mkdir("/tmp/watermarking", os.ModePerm)
@@ -36,7 +33,7 @@ func Run() {
 	r.GET("/", func(c *gin.Context) {
 		c.File("board/templates/upload.html")
 	})
-	
+
 	r.POST("/upload", func(c *gin.Context) {
 		img, err := imageupload.Process(c.Request, "file")
 
@@ -47,7 +44,7 @@ func Run() {
 		t := time.Now()
 		imgPath := fmt.Sprintf("/tmp/watermarking/%s-%s", t.Format("20060102150405"), img.Filename)
 		ioutil.WriteFile(imgPath, img.Data, 0644)
-		
+
 		payload := make(map[string]interface{})
 		payload["imagePath"] = imgPath
 
@@ -76,7 +73,7 @@ func Run() {
 			ctx.String(403, ":(")
 			return
 		}
-		
+
 		ctx.File(targetPath)
 	})
 
