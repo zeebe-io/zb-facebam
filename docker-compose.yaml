@@ -10,9 +10,6 @@ services:
   board:
     image: psam/facebam
     command: service board
-    env:
-      - AWS_ACCESS_KEY_ID: AKIAJMVH523HK74Q4T6A
-      - AWS_SECRET_ACCESS_KEY: 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
     ports:
       - 8080:8080
 
