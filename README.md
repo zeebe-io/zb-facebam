@@ -11,7 +11,7 @@ The process which is implemented is the following:
 **Note:** The services work on a hard coded path `/tmp/watermarking` which
 will probably only work in \*UNIX like environments.
 
-### Requirements
+## Requirements
 
 * Java 1.8
 * Golang 1.5+
@@ -19,7 +19,7 @@ will probably only work in \*UNIX like environments.
 * [zbctl](https://github.com/zeebe-io/zbc-go/releases)
 
 
-### Setup
+## Setup
 
 First create topic which will be used by our process.
 
@@ -75,3 +75,15 @@ Task completed successfully.
 After you uploaded an image and the task services processes it you can visit
 http://localhost:5000/images/ and refresh the page using CTRL+F5 to list the
 process images.
+
+## Code of Conduct
+
+This project adheres to the Contributor Covenant [Code of
+Conduct](/CODE_OF_CONDUCT.md). By participating, you are expected to uphold
+this code. Please report unacceptable behavior to code-of-conduct@zeebe.io.
+
+## License
+
+zb-facebam is distributed under the terms of the Apache License (Version 2.0).
+
+See [LICENSE](/LICENSE) for details.
