@@ -58,7 +58,7 @@ func (rf *responseHandler) unmarshalWorkflow(m *Message) *zbmsgpack.Workflow {
 	if err != nil {
 		return nil
 	}
-	if len(d.State) > 0 && len(d.ResourceType) > 0 {
+	if len(d.State) > 0 {
 		return &d
 	}
 	return nil
@@ -86,4 +86,8 @@ func (rf *responseHandler) unmarshalTopicSubAck(m *Message) *zbmsgpack.TopicSubs
 		return &d
 	}
 	return nil
+}
+
+func newResponseHandler() *responseHandler {
+	return &responseHandler{}
 }

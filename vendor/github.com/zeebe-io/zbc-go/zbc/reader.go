@@ -8,7 +8,6 @@ import (
 
 	"github.com/zeebe-io/zbc-go/zbc/zbprotocol"
 	"github.com/zeebe-io/zbc-go/zbc/zbsbe"
-	"net"
 )
 
 var (
@@ -20,7 +19,7 @@ var (
 
 // MessageReader is builder which will read byte array and construct Message with all their parts.
 type MessageReader struct {
-	*Socket
+	*socket
 }
 
 func (mr *MessageReader) readFrameHeader(data io.Reader) (*zbprotocol.FrameHeader, error) {
@@ -179,7 +178,7 @@ func (mr *MessageReader) readHeaders() (*Headers, *[]byte, error) {
 
 	currentSize := int64(frameHeader.Length) + FrameHeaderSize
 	expectedSize := (currentSize + 7) & ^7
-	mr.PopBytes(int(expectedSize))
+	mr.popBytes(int(expectedSize))
 
 	return &header, &body, nil
 }
@@ -281,8 +280,8 @@ func (mr *MessageReader) parseMessage(headers *Headers, message *[]byte) (*Messa
 }
 
 // NewMessageReader is constructor for MessageReader builder.
-func NewMessageReader(conn net.Conn) *MessageReader {
+func NewMessageReader(socket *socket) *MessageReader {
 	return &MessageReader{
-		NewSocketStream(conn),
+		socket,
 	}
 }

@@ -59,7 +59,7 @@ public class WatermarkImageHandlerTest
         // given
         client.workflows()
             .deploy(TOPIC)
-            .resourceFromClasspath("process.bpmn")
+            .addResourceFromClasspath("process.bpmn")
             .execute();
 
         ClassLoader classLoader = WatermarkImageHandlerTest.class.getClassLoader();

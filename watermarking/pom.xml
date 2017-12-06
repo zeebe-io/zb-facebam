@@ -5,8 +5,8 @@
   <version>0.0.1-SNAPSHOT</version>
 
   <properties>
-    <version.zeebe>0.4.0</version.zeebe>
-    <version.zb-util>0.4.0</version.zb-util>
+    <version.zeebe>0.5.0</version.zeebe>
+    <version.zb-util>0.5.0</version.zb-util>
     <version.jackson>2.9.0</version.jackson>
   </properties>
 

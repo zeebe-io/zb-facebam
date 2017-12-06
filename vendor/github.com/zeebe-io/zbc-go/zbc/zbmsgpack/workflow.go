@@ -5,12 +5,19 @@ import (
 	"fmt"
 )
 
-// Workflow is msgpack structure used when creating a workflow
-type Workflow struct {
-	State        string `yaml:"state" msgpack:"state"`
-	ResourceType string `yaml:"resourceType" msgpack:"resourceType"`
-	TopicName    string `yaml:"topicName" msgpack:"topicName"`
+// Resource is message pack structure used to represent a workflow definition.
+type Resource struct {
 	Resource     []byte `yaml:"resource" msgpack:"resource"`
+	ResourceType string `yaml:"resourceType" msgpack:"resourceType"`
+	ResourceName string `yaml:"resourceName" msgpack:"resourceName"`
+}
+
+// Workflow is message pack structure used when creating a workflow.
+type Workflow struct {
+	State string `yaml:"state" msgpack:"state"`
+
+	TopicName string      `yaml:"topicName" msgpack:"topicName"`
+	Resources []*Resource `yaml:"resources" msgpack:"resources"`
 }
 
 func (t *Workflow) String() string {

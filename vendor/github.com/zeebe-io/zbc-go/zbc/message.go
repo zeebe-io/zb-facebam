@@ -71,6 +71,27 @@ func (m *Message) SetData(data []byte) {
 	m.Data = data
 }
 
+func (m *Message) forPartitionId() *uint16 {
+	switch sbe := (*m.SbeMessage).(type) {
+	case *zbsbe.ControlMessageRequest:
+		return &sbe.PartitionId
+	case *zbsbe.ExecuteCommandRequest:
+		return &sbe.PartitionId
+	default:
+		return nil
+	}
+}
+
+func (m *Message) isTopologyMessage() bool {
+	switch sbe := (*m.SbeMessage).(type) {
+	case *zbsbe.ControlMessageRequest:
+		if sbe.MessageType == zbsbe.ControlMessageType.REQUEST_TOPOLOGY {
+			return true
+		}
+	}
+	return false
+}
+
 func (m *Message) jsonString(data interface{}) string {
 	b, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {

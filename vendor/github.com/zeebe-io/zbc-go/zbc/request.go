@@ -7,9 +7,9 @@ import (
 	"github.com/zeebe-io/zbc-go/zbc/zbsbe"
 )
 
-type requestHandler struct{}
+type requestFactory struct{}
 
-func (rf *requestHandler) headers(t interface{}) *Headers {
+func (rf *requestFactory) headers(t interface{}) *Headers {
 	switch v := t.(type) {
 
 	case *zbsbe.ExecuteCommandRequest:
@@ -52,7 +52,7 @@ func (rf *requestHandler) headers(t interface{}) *Headers {
 	return nil
 }
 
-func (rf *requestHandler) newCommandMessage(commandRequest *zbsbe.ExecuteCommandRequest, command interface{}) *Message {
+func (rf *requestFactory) newCommandMessage(commandRequest *zbsbe.ExecuteCommandRequest, command interface{}) *Message {
 	var msg Message
 
 	b, err := msgpack.Marshal(command)
@@ -66,7 +66,7 @@ func (rf *requestHandler) newCommandMessage(commandRequest *zbsbe.ExecuteCommand
 	return &msg
 }
 
-func (rf *requestHandler) newControlMessage(req *zbsbe.ControlMessageRequest, payload interface{}) *Message {
+func (rf *requestFactory) newControlMessage(req *zbsbe.ControlMessageRequest, payload interface{}) *Message {
 	var msg Message
 
 	b, err := msgpack.Marshal(payload)
@@ -80,7 +80,14 @@ func (rf *requestHandler) newControlMessage(req *zbsbe.ControlMessageRequest, pa
 	return &msg
 }
 
-func (rf *requestHandler) createTaskRequest(commandRequest *zbsbe.ExecuteCommandRequest, task *zbmsgpack.Task) *Message {
+func (rf *requestFactory) createTaskRequest(partition uint16, position uint64, task *zbmsgpack.Task) *Message {
+	commandRequest := &zbsbe.ExecuteCommandRequest{
+		PartitionId: partition,
+		Position:    position,
+		Command:     []uint8{},
+	}
+	commandRequest.Key = commandRequest.KeyNullValue()
+
 	commandRequest.EventType = zbsbe.EventTypeEnum(0)
 
 	if task.Payload == nil {
@@ -94,7 +101,7 @@ func (rf *requestHandler) createTaskRequest(commandRequest *zbsbe.ExecuteCommand
 	return rf.newCommandMessage(commandRequest, task)
 }
 
-func (rf *requestHandler) completeTaskRequest(taskMessage *SubscriptionEvent) *Message {
+func (rf *requestFactory) completeTaskRequest(taskMessage *SubscriptionEvent) *Message {
 	taskMessage.Task.State = TaskComplete
 	cmdReq := &zbsbe.ExecuteCommandRequest{
 		PartitionId: taskMessage.Event.PartitionId,
@@ -104,7 +111,14 @@ func (rf *requestHandler) completeTaskRequest(taskMessage *SubscriptionEvent) *M
 	return rf.newCommandMessage(cmdReq, taskMessage.Task)
 }
 
-func (rf *requestHandler) createWorkflowInstanceRequest(commandRequest *zbsbe.ExecuteCommandRequest, wf *zbmsgpack.WorkflowInstance) *Message {
+func (rf *requestFactory) createWorkflowInstanceRequest(partition uint16, position uint64, topic string, wf *zbmsgpack.WorkflowInstance) *Message {
+	commandRequest := &zbsbe.ExecuteCommandRequest{
+		PartitionId: partition,
+		Position:    position,
+		Command:     []uint8{},
+	}
+
+	commandRequest.Key = commandRequest.KeyNullValue()
 	commandRequest.EventType = zbsbe.EventTypeEnum(5)
 
 	if wf.Payload == nil {
@@ -116,9 +130,10 @@ func (rf *requestHandler) createWorkflowInstanceRequest(commandRequest *zbsbe.Ex
 	}
 
 	return rf.newCommandMessage(commandRequest, wf)
+
 }
 
-func (rf *requestHandler) topologyRequest() *Message {
+func (rf *requestFactory) topologyRequest() *Message {
 	t := &zbmsgpack.TopologyRequest{}
 	cmr := &zbsbe.ControlMessageRequest{
 		MessageType: zbsbe.ControlMessageType.REQUEST_TOPOLOGY,
@@ -128,15 +143,33 @@ func (rf *requestHandler) topologyRequest() *Message {
 	return rf.newControlMessage(cmr, t)
 }
 
-func (rf *requestHandler) newWorkflowRequest(commandRequest *zbsbe.ExecuteCommandRequest, d *zbmsgpack.Workflow) *Message {
+func (rf *requestFactory) deployWorkflowRequest(topic string, resources []*zbmsgpack.Resource) *Message {
+	deployment := zbmsgpack.Workflow{
+		State:     CreateDeployment,
+		Resources: resources,
+		TopicName: topic,
+	}
+	commandRequest := &zbsbe.ExecuteCommandRequest{
+		PartitionId: 0,
+		Position:    0,
+		Command:     []uint8{},
+	}
+	commandRequest.Key = commandRequest.KeyNullValue()
 	commandRequest.EventType = zbsbe.EventTypeEnum(4)
-	return rf.newCommandMessage(commandRequest, d)
+	return rf.newCommandMessage(commandRequest, deployment)
 }
 
-func (rf *requestHandler) openTaskSubscriptionRequest(partitionId uint16, ts *zbmsgpack.TaskSubscription) *Message {
-	var msg Message
+func (rf *requestFactory) openTaskSubscriptionRequest(partitionId uint16, lockOwner, taskType string, credits int32) *Message {
+	taskSub := &zbmsgpack.TaskSubscription{
+		Credits:       credits,
+		LockDuration:  300000,
+		LockOwner:     lockOwner,
+		SubscriberKey: 0,
+		TaskType:      taskType,
+	}
 
-	b, err := msgpack.Marshal(ts)
+	var msg Message
+	b, err := msgpack.Marshal(taskSub)
 	if err != nil {
 		return nil
 	}
@@ -147,10 +180,11 @@ func (rf *requestHandler) openTaskSubscriptionRequest(partitionId uint16, ts *zb
 	}
 	msg.SetSbeMessage(controlRequest)
 	msg.SetHeaders(rf.headers(controlRequest))
+
 	return &msg
 }
 
-func (rf *requestHandler) increaseTaskSubscriptionCreditsRequest(ts *zbmsgpack.TaskSubscription) *Message {
+func (rf *requestFactory) increaseTaskSubscriptionCreditsRequest(ts *zbmsgpack.TaskSubscription) *Message {
 	var msg Message
 
 	b, err := msgpack.Marshal(ts)
@@ -166,7 +200,7 @@ func (rf *requestHandler) increaseTaskSubscriptionCreditsRequest(ts *zbmsgpack.T
 	return &msg
 }
 
-func (rf *requestHandler) closeTaskSubscriptionRequest(ts *zbmsgpack.TaskSubscription) *Message {
+func (rf *requestFactory) closeTaskSubscriptionRequest(ts *zbmsgpack.TaskSubscription) *Message {
 	var msg Message
 
 	b, err := msgpack.Marshal(ts)
@@ -182,7 +216,7 @@ func (rf *requestHandler) closeTaskSubscriptionRequest(ts *zbmsgpack.TaskSubscri
 	return &msg
 }
 
-func (rf *requestHandler) closeTopicSubscriptionRequest(ts *zbmsgpack.TopicSubscription) *Message {
+func (rf *requestFactory) closeTopicSubscriptionRequest(ts *zbmsgpack.TopicSubscription) *Message {
 	var msg Message
 
 	b, err := msgpack.Marshal(ts)
@@ -199,41 +233,78 @@ func (rf *requestHandler) closeTopicSubscriptionRequest(ts *zbmsgpack.TopicSubsc
 	return &msg
 }
 
-func (rf *requestHandler) openTopicSubscriptionRequest(cmdReq *zbsbe.ExecuteCommandRequest, ts *zbmsgpack.OpenTopicSubscription) *Message {
+func (rf *requestFactory) openTopicSubscriptionRequest(partitionID uint16, topic, subName string, startPosition int64) *Message {
+	ts := &zbmsgpack.OpenTopicSubscription{
+		StartPosition:    startPosition,
+		Name:             subName,
+		PrefetchCapacity: 0,
+		ForceStart:       true,
+		State:            TopicSubscriptionSubscribeState,
+	}
+	execCommandRequest := &zbsbe.ExecuteCommandRequest{
+		PartitionId: partitionID,
+		Position:    0,
+		EventType:   zbsbe.EventType.SUBSCRIBER_EVENT,
+	}
+	execCommandRequest.Key = execCommandRequest.KeyNullValue()
+
 	var msg Message
 
 	b, err := msgpack.Marshal(ts)
 	if err != nil {
 		return nil
 	}
-	cmdReq.Command = b
-	msg.SetSbeMessage(cmdReq)
-	msg.SetHeaders(rf.headers(cmdReq))
+	execCommandRequest.Command = b
+	msg.SetSbeMessage(execCommandRequest)
+	msg.SetHeaders(rf.headers(execCommandRequest))
 	return &msg
 }
 
-func (rf *requestHandler) topicSubscriptionAckRequest(cmdReq *zbsbe.ExecuteCommandRequest, tsa *zbmsgpack.TopicSubscriptionAck) *Message {
+func (rf *requestFactory) topicSubscriptionAckRequest(ts *zbmsgpack.TopicSubscription, s *SubscriptionEvent) *Message {
+	tsa := &zbmsgpack.TopicSubscriptionAck{
+		Name:        ts.SubscriptionName,
+		AckPosition: s.Event.Position,
+		State:       TopicSubscriptionAckState,
+	}
+	execCommandRequest := &zbsbe.ExecuteCommandRequest{
+		PartitionId: s.Event.PartitionId,
+		Position:    0,
+		EventType:   zbsbe.EventType.SUBSCRIPTION_EVENT,
+	}
+	execCommandRequest.Key = execCommandRequest.KeyNullValue()
+
 	var msg Message
 
 	b, err := msgpack.Marshal(tsa)
 	if err != nil {
 		return nil
 	}
-	cmdReq.Command = b
-	msg.SetSbeMessage(cmdReq)
-	msg.SetHeaders(rf.headers(cmdReq))
+	execCommandRequest.Command = b
+	msg.SetSbeMessage(execCommandRequest)
+	msg.SetHeaders(rf.headers(execCommandRequest))
 	return &msg
 }
 
-func (rf *requestHandler) createTopicRequest(cmdReq *zbsbe.ExecuteCommandRequest, t *zbmsgpack.Topic) *Message {
+func (rf *requestFactory) createTopicRequest(topic *zbmsgpack.Topic) *Message {
+	execCommandRequest := &zbsbe.ExecuteCommandRequest{
+		PartitionId: 0,
+		Position:    0,
+		EventType:   zbsbe.EventType.TOPIC_EVENT,
+	}
+	execCommandRequest.Key = execCommandRequest.KeyNullValue()
+
 	var msg Message
 
-	b, err := msgpack.Marshal(t)
+	b, err := msgpack.Marshal(topic)
 	if err != nil {
 		return nil
 	}
-	cmdReq.Command = b
-	msg.SetSbeMessage(cmdReq)
-	msg.SetHeaders(rf.headers(cmdReq))
+	execCommandRequest.Command = b
+	msg.SetSbeMessage(execCommandRequest)
+	msg.SetHeaders(rf.headers(execCommandRequest))
 	return &msg
+}
+
+func newRequestFactory() *requestFactory {
+	return &requestFactory{}
 }

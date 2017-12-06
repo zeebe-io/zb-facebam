@@ -9,7 +9,7 @@ import (
 
 const maxInt64 = float64(math.MaxInt64 - 512)
 
-// RetryDeadlineReached is error which occurs when request failed multiple times unsuccessfully.
+// RetryDeadlineReached is error which occurs when requestWrapper failed multiple times unsuccessfully.
 var RetryDeadlineReached = errors.New("Message retry deadline reached")
 
 // backoff is used to calculated backoffs for requests.

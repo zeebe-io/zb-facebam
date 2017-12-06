@@ -5,7 +5,7 @@ import "time"
 // RequestTimeout specifies default timeout for responder.
 const RequestTimeout = 30
 
-// TopologyRefreshInterval defines time to live of topology object.
+// TopologyRefreshInterval defines time to live of refreshTopology object.
 const TopologyRefreshInterval = 30
 
 // Retry constants
@@ -43,8 +43,9 @@ const (
 	TaskComplete  = "COMPLETE"
 	TaskCompleted = "COMPLETED"
 
-	CreateDeployment   = "CREATE_DEPLOYMENT"
-	DeployementCreated = "DEPLOYMENT_CREATED"
+	CreateDeployment   = "CREATE"
+	DeploymentCreated  = "CREATED"
+	DeploymentRejected = "REJECTED"
 
 	CreateWorkflowInstance   = "CREATE_WORKFLOW_INSTANCE"
 	WorkflowInstanceCreated  = "WORKFLOW_INSTANCE_CREATED"
@@ -82,4 +83,8 @@ const (
 
 const (
 	SocketChunkSize = 4096
+)
+
+const (
+	requestQueueSize = 1024
 )

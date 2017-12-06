@@ -78,23 +78,23 @@
 		},
 		{
 			"ImportPath": "github.com/zeebe-io/zbc-go/zbc",
-			"Comment": "0.4.0",
-			"Rev": "cb70fe95ca19120b7f240671a83127c17064a9cd"
+			"Comment": "0.5.0",
+			"Rev": "9f15e4bf9eec24822440f9852a3d8a8b5b3c5b37"
 		},
 		{
 			"ImportPath": "github.com/zeebe-io/zbc-go/zbc/zbmsgpack",
-			"Comment": "0.4.0",
-			"Rev": "cb70fe95ca19120b7f240671a83127c17064a9cd"
+			"Comment": "0.5.0",
+			"Rev": "9f15e4bf9eec24822440f9852a3d8a8b5b3c5b37"
 		},
 		{
 			"ImportPath": "github.com/zeebe-io/zbc-go/zbc/zbprotocol",
-			"Comment": "0.4.0",
-			"Rev": "cb70fe95ca19120b7f240671a83127c17064a9cd"
+			"Comment": "0.5.0",
+			"Rev": "9f15e4bf9eec24822440f9852a3d8a8b5b3c5b37"
 		},
 		{
 			"ImportPath": "github.com/zeebe-io/zbc-go/zbc/zbsbe",
-			"Comment": "0.4.0",
-			"Rev": "cb70fe95ca19120b7f240671a83127c17064a9cd"
+			"Comment": "0.5.0",
+			"Rev": "9f15e4bf9eec24822440f9852a3d8a8b5b3c5b37"
 		},
 		{
 			"ImportPath": "golang.org/x/sys/unix",
@@ -108,6 +108,16 @@
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
 			"Rev": "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
+		},
+		{
+			"ImportPath": "github.com/zeebe-io/zbc-go/vendor/github.com/vmihailenco/msgpack",
+			"Comment": "0.5.0",
+			"Rev": "9f15e4bf9eec24822440f9852a3d8a8b5b3c5b37"
+		},
+		{
+			"ImportPath": "github.com/zeebe-io/zbc-go/vendor/github.com/vmihailenco/msgpack/codes",
+			"Comment": "0.5.0",
+			"Rev": "9f15e4bf9eec24822440f9852a3d8a8b5b3c5b37"
 		}
 	]
 }
