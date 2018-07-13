@@ -1,5 +1,7 @@
 # zb-facebam
 
+**Note:** This example uses **Zeebe 0.5** and cannot be used with the latest Zeebe version without modifications!
+
 This project implements example application which consist of 3 services: board,
 thumbnail and watermarking.
 
@@ -15,6 +17,7 @@ will probably only work in \*UNIX like environments.
 
 * Java 1.8
 * Golang 1.5+
+* Zeebe 0.5
 * [Running Zeebe broker](https://docs.zeebe.io/introduction/install.html)
 * [zbctl](https://github.com/zeebe-io/zbc-go/releases)
 
